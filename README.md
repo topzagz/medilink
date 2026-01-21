@@ -195,7 +195,7 @@ AI components can be integrated directly within the backend or accessed as indep
 
 
 ## 🎥 Demo Video
-[![Medilink AI Healthcare Demo](https://vumbnail.com/VIDEO_ID.jpg)](https://vimeo.com/VIDEO_ID)
+[![Medilink AI Healthcare Demo](https://vumbnail.com/1156746818.jpg)](https://vimeo.com/1156746818)
 
 This video demonstrates the AI-powered healthcare workflow, including user registration,
 AI-assisted analysis, and admin management features.
