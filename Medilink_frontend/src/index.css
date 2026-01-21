@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap');
+
+@import "tailwindcss";
+@plugin "daisyui";
+
+@layer utilities {
+  @keyframes marquee-vertical-up {
+    100% {
+      transform: translateY(-50%);
+    }
+  }
+
+  .animate-marquee-vertical-up {
+    animation: marquee-vertical-up var(--marquee-duration) linear infinite;
+  }
+
+  @keyframes marquee-vertical-down {
+    0% {
+      transform: translateY(-50%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  .animate-marquee-vertical-down {
+    animation: marquee-vertical-down var(--marquee-duration) linear infinite;
+  }
+
+  @keyframes marquee {
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee var(--marquee-duration) linear infinite;
+  }
+}
+
+/* DaisyUI plugin should be added inside tailwind.config.js, not here */
+@layer base {
+  :root {
+    --font-sans: "Noto Sans Thai", sans-serif;
+
+    /* Colors */
+    --color-base-100: oklch(98% 0.02 240);
+    --color-base-200: oklch(95% 0.03 240);
+    --color-base-300: oklch(92% 0.04 240);
+    --color-base-content: oklch(20% 0.05 240);
+    --color-primary: oklch(77.29% 0.1535 163.22);
+    --color-primary-content: oklch(98% 0.01 240);
+    --color-secondary: oklch(78.45% 0.1325 181.91);
+    --color-secondary-content: oklch(98% 0.01 200);
+    --color-accent: oklch(65% 0.25 160);
+    --color-accent-content: oklch(98% 0.01 160);
+    --color-neutral: oklch(50% 0.05 240);
+    --color-neutral-content: oklch(98% 0.01 240);
+    --color-info: oklch(70% 0.2 220);
+    --color-info-content: oklch(98% 0.01 220);
+    --color-success: oklch(65% 0.25 140);
+    --color-success-content: oklch(98% 0.01 140);
+    --color-warning: oklch(80% 0.25 80);
+    --color-warning-content: oklch(20% 0.05 80);
+    --color-error: oklch(65% 0.3 30);
+    --color-error-content: oklch(98% 0.01 30);
+
+    /* Border Radius */
+    --radius-selector: 1rem;
+    --radius-field: 8px;
+    --radius-box: 0.5rem;
+
+    /* Base Sizes */
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+
+    /* Border Size */
+    --border: 1px;
+
+    /* Effects */
+    --depth: 1;
+    --noise: 0;
+  }
+
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ping-slow {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes fill-bar-slow {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 80%;
+  }
+}
+
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes logo-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out;
+}
+
+.animate-ping-slow {
+  animation: ping-slow 2s ease-in-out infinite;
+}
+
+.animate-fill-bar-slow {
+  animation: fill-bar-slow 8s ease-in-out forwards;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+.animate-logo-pop {
+  animation: logo-pop 0.8s ease-out;
+}

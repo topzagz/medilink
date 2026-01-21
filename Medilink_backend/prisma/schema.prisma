@@ -1,0 +1,193 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Day {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum Status {
+  PENDING
+  SUCCESS
+  CANCELLED
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  password     String
+  firstname    String
+  lastname     String
+  phone        String?
+  address      String?
+  profileImg   String?
+  role         Role          @default(USER)
+  appointments Appointment[]
+  orders       Order[]
+  createdAt    DateTime      @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime      @updatedAt
+}
+
+model Doctor {
+  id              Int              @id @default(autoincrement())
+  firstname       String
+  lastname        String
+  specialty       Specialty        @relation(fields: [specialtyId], references: [id])
+  specialtyId     Int
+  hospital        Hospital         @relation(fields: [hospitalId], references: [id])
+  hospitalId      Int
+  experience      String
+  appointments    Appointment[]
+  createdAt       DateTime         @default(now()) @db.Timestamp(0)
+  updatedAt       DateTime         @updatedAt
+  profileImg      String?
+  doctorSchedules DoctorSchedule[]
+  doctorOvertime  DoctorOvertime[]
+  doctorLeave     DoctorLeave[]
+}
+
+model Specialty {
+  id            Int      @id @default(autoincrement())
+  specialtyName String
+  doctors       Doctor[]
+}
+
+model Hospital {
+  id          Int      @id @default(autoincrement())
+  name        String
+  contactInfo String?
+  location    Location @relation(fields: [locationId], references: [id])
+  locationId  Int
+  doctors     Doctor[]
+  createdAt   DateTime @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime @updatedAt
+  profileImg  String?
+}
+
+model Location {
+  id        Int        @id @default(autoincrement())
+  latitude  Float
+  longitude Float
+  address   String
+  hospital  Hospital[]
+}
+
+model Appointment {
+  id               Int             @id @default(autoincrement())
+  user             User            @relation(fields: [userId], references: [id])
+  userId           Int
+  doctor           Doctor          @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  doctorId         Int
+  appointmentDate  DateTime
+  status           Status          @default(PENDING)
+  payment          Payment?        @relation(fields: [paymentId], references: [id])
+  paymentId        Int?
+  createdAt        DateTime        @default(now()) @db.Timestamp(0)
+  updatedAt        DateTime        @updatedAt
+  note             String?
+  DoctorSchedule   DoctorSchedule? @relation(fields: [doctorScheduleId], references: [id], onDelete: SetNull)
+  doctorScheduleId Int?
+  DoctorOvertime   DoctorOvertime? @relation(fields: [doctorOvertimeId], references: [id], onDelete: SetNull)
+  doctorOvertimeId Int?
+  Order            Order[]
+}
+
+model Program {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  orders      Order[]
+  createdAt   DateTime @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime @updatedAt
+  profileImg  String?
+}
+
+model Order {
+  id            Int         @id @default(autoincrement())
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int
+  program       Program?     @relation(fields: [programId], references: [id])
+  programId     Int?
+  orderDate     DateTime    @default(now())
+  payment       Payment?    @relation(fields: [paymentId], references: [id])
+  paymentId     Int?
+  appointmentId Int?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+  status        String
+  createdAt     DateTime    @default(now()) @db.Timestamp(0)
+  updatedAt     DateTime    @updatedAt
+}
+
+model Payment {
+  id          Int           @id @default(autoincrement())
+  amount      Float
+  paymentDate DateTime      @default(now())
+  status      String
+  method      String        @default("STRIPE")
+  appointment Appointment[]
+  order       Order[]
+  createdAt   DateTime      @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime      @updatedAt
+}
+
+model Time {
+  id             Int              @id @default(autoincrement())
+  startTime      DateTime
+  endTime        DateTime
+  schedules      DoctorSchedule[]
+  DoctorOvertime DoctorOvertime[]
+  DoctorLeave    DoctorLeave[]
+}
+
+model DoctorSchedule {
+  id          Int           @id @default(autoincrement())
+  day         Day
+  doctorId    Int?
+  doctor      Doctor?       @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  Time        Time?         @relation(fields: [timeId], references: [id])
+  timeId      Int?
+  appointment Appointment[]
+}
+
+model DoctorOvertime {
+  id          Int           @id @default(autoincrement())
+  date        DateTime      @db.Date()
+  doctorId    Int?
+  doctor      Doctor?       @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  Time        Time?         @relation(fields: [timeId], references: [id])
+  timeId      Int?
+  appointment Appointment[]
+}
+
+model DoctorLeave {
+  id       Int      @id @default(autoincrement())
+  date     DateTime @db.Date()
+  doctorId Int?
+  doctor   Doctor?  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  Time     Time?    @relation(fields: [timeId], references: [id])
+  timeId   Int?
+  reason   String?
+}
